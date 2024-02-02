@@ -1,0 +1,11 @@
+### APIs
+https://developer.spotify.com/documentation/web-api/reference/get-audio-analysis - pull down audio data
+
+### Distance
+https://en.wikipedia.org/wiki/Dynamic_time_warping - ending and beginning may not be same lengths
+https://en.wikipedia.org/wiki/Cosine_similarity
+
+### Ordering Algorithms
+https://homes.cs.washington.edu/~shayan/atsp.pdf
+https://homes.di.unimi.it/righini/Didattica/ComplementiRicercaOperativa/MaterialeCRO/2002%20-%20Fischetti%20Lodi%20Toth%20-%20B&C%20for%20ATSP.pdf
+https://developers.google.com/optimization/routing/tsp
