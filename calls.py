@@ -3,8 +3,8 @@ from spotipy.oauth2 import SpotifyClientCredentials
 
 
 
-spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='02fb254044ab46459048afd12ccb39ec',
-                                                                              client_secret='ba0d5a9e1b2a42c294c404520abe0e00'))
+spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='_',
+                                                                              client_secret='_'))
 
 def getUri(s):
     return spotify.playlist(playlist_id=s, additional_types=('track',))['tracks']
@@ -24,7 +24,7 @@ for idx, item in enumerate(results['items']):
 
 
 def printPlaylist(finalOrder):
-    for idx, item in enumerate(results['items']):
+    for idx, _ in enumerate(results['items']):
         track = results['items'][finalOrder[idx]]['track']
         print(idx, track['artists'][0]['name'], " – ", track['name'])
 
