@@ -64,11 +64,13 @@ def printPlaylist(finalOrder, results):
 
 
 def makePlaylist(finalOrder, user, results):
-    woohoo = spotify.user_playlist_create(user=user, public=True, collaborative=False, description='')
+    play = spotify.user_playlist_create(user=user, public=True, collaborative=False, description='')
+    id, url = play['id'], play['external_urls']['spotify']
     tracks = []
     for idx, _ in enumerate(results['items']):
         tracks.append(results['items'][finalOrder[idx]]['track'])
-    spotify.user_playlist_add_tracks(user=user, playlist_id=woohoo, position=0, tracks=tracks)
+    spotify.user_playlist_add_tracks(user=user, playlist_id=id, position=0, tracks=tracks)
+    return url
 
 
 def call(url):
