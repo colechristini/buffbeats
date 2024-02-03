@@ -13,16 +13,18 @@
         <form action="/" method="POST">
             <!-- <input type="text" name="link" placeholder="playlist link"> -->
             <!-- <input id="link" type="Generate"> -->
-            <input type="url"
-                name="url"
-                id="url"
-                placeholder="https://example.com"
-                pattern="http://www\.open\.spotify\.com\/(.+)|https://www\.open\.spotify\.com\/(.+)|https://open\.spotify\.com\/(.+)">
+            <div class="link_box">
+                <input type="url"
+                    name="url"
+                    id="url"
+                    placeholder="https://example.com"
+                    pattern="http://www\.open\.spotify\.com\/(.+)|https://www\.open\.spotify\.com\/(.+)|https://open\.spotify\.com\/(.+)">
                 <!-- https://open.spotify.com/playlist -->
-            
-            <input type="submit" value ="Generate">
-
-            <!-- <button type="button" onClick="GeneratePlaylist()" >Generate</button>
+            </div>
+            <div class="generate_button">
+                <input type="submit" value ="Generate">
+            </div>
+                <!-- <button type="button" onClick="GeneratePlaylist()" >Generate</button>
             <p id="generated"></p>
             <script>
                 function GeneratePlaylist() {
