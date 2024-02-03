@@ -11,7 +11,9 @@ def exp_decay (i, j):
 # Compute the weighted cosine similarity between two arrays of floats.
 # Inputs: Two arrays of floats, a weight array.
 # Outputs: The weighted cosine similarity between the two arrays.
-def weighted_cos_sim(a, b, weights):
+def cos_sim(a, b, weights=None):
+    if weights is None:
+        return np.dot(a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
     return np.dot(weights * a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 # Use dynamic time warping to find the distance between two 
@@ -21,18 +23,37 @@ def weighted_cos_sim(a, b, weights):
 # an optional weight function.
 # Outputs: the DTW distance between the two lists.
 # https://en.wikipedia.org/wiki/Dynamic_time_warping
-def dynamic_time_warping(a_1, a_2, d, w = None):
+def dynamic_time_warping(a_1, a_2, d, weight = None, window = None):
     dtw = np.full((len(a_1) + 1, len(a_2) + 1), np.inf)
     dtw[0, 0] = 0
-    for i in range(1, len(a_1) + 1):
-        for j in range(1, len(a_2) + 1):
-            cost = d(a_1[i - 1], a_2[j - 1])
-            # Apply weight function to cost if provided, inspired by
-            # https://www.sciencedirect.com/science/article/pii/S0020025520308501
-            if w is not None: cost *= w(i - 1, j - 1 )
-            dtw[i, j] = cost + min(dtw[i - 1,  j],
-                                   dtw [i, j - 1],
-                                   dtw[i - 1, j - 1])
+    if window is not None:
+        window = max(window, abs(len(a_1) - len(a_2)))
+        for i in range(1, len(a_1) + 1):
+            r = (max(1, i - window), min(len(a_2), i + window))
+            for j in range(r[0], r[1]):
+                dtw[i,j] = 0
+        #print(dtw)
+        for i in range(1, len(a_1) + 1):
+            r = (max(1, i - window), min(len(a_2) + 1, i + window + 1))
+            for j in range(r[0], r[1]):
+                cost = d(a_1[i - 1], a_2[j - 1])
+                # Apply weight function to cost if provided, inspired by
+                # https://www.sciencedirect.com/science/article/pii/S0020025520308501
+                if weight is not None: cost *= weight(i - 1, j - 1 )
+                dtw[i, j] = cost + min(dtw[i - 1,  j],
+                                    dtw [i, j - 1],
+                                    dtw[i - 1, j - 1])
+            #print(dtw)
+    else:
+        for i in range(1, len(a_1) + 1):
+            for j in range(1, len(a_2) + 1):
+                cost = d(a_1[i - 1], a_2[j - 1])
+                # Apply weight function to cost if provided, inspired by
+                # https://www.sciencedirect.com/science/article/pii/S0020025520308501
+                if weight is not None: cost *= weight(i - 1, j - 1 )
+                dtw[i, j] = cost + min(dtw[i - 1,  j],
+                                    dtw [i, j - 1],
+                                    dtw[i - 1, j - 1])
     return dtw[-1, -1]
     
 # Calculate distance between two supplied segments.
@@ -44,10 +65,9 @@ def segment_distance(s1, s2):
     s2_loudness_vec = [s2['loudness_start'], s2['loudness_max'],
                        s2['loudness_max_time'], s2['loudness_end']]
     weights = np.array([0.75, 1, 0.9, 0.6])
-    loudness_dist = 1 - weighted_cos_sim(s1_loudness_vec, s2_loudness_vec, weights)
-    dist = lambda a, b: abs(a - b)
-    pitch_dist = dynamic_time_warping(s1['pitches'], s2['pitches'], dist)
-    timbre_dist = dynamic_time_warping(s1['timbre'], s2['timbre'], dist)
+    loudness_dist = 1 - cos_sim(s1_loudness_vec, s2_loudness_vec, weights)
+    pitch_dist = 1 - cos_sim(s1['pitches'], s2['pitches'])
+    timbre_dist = 1 - cos_sim(s1['timbre'], s2['timbre'])
     return 0.6 * loudness_dist + pitch_dist + 0.5 * timbre_dist
 
 # Calculate distance between two songs. 
@@ -65,8 +85,9 @@ def song_dist(s1, s2):
                       int_sec['key'], int_sec['mode']]
     weights = np.array([0.6, 0.7, 1, 0.8])
     # Convert similarity to distance.
-    sec_dist = 1 - weighted_cos_sim(outro_features, intro_features, weights)
-    seg_dist = dynamic_time_warping(out_segs, int_segs, segment_distance, exp_decay)
+    sec_dist = 1 - cos_sim(outro_features, intro_features, weights)
+    seg_dist = dynamic_time_warping(out_segs, int_segs, segment_distance,
+                                    weight=exp_decay, window=4)
     return 0.6 * sec_dist + seg_dist
 
 # Generate pairwise (non-symmetric) distance matrix for a playlist
@@ -121,4 +142,6 @@ def processPlaylist(songs, iterations : int):
         outputs.append(order)
         max_dists.append(maxDist)
     print(outputs)
+    print(max_dists)
+    print(outputs[np.argmin(np.array(max_dists))], max_dists[np.argmin(np.array(max_dists))])
     return outputs[np.argmin(np.array(max_dists))]
