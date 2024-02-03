@@ -6,21 +6,16 @@ playlist_uri = 'spotify:playlist:2kTwuQqA8VlSFXVKwHB3sf'
 
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='02fb254044ab46459048afd12ccb39ec',
                                                                               client_secret='ba0d5a9e1b2a42c294c404520abe0e00'))
-results = spotify.playlist(playlist_id=playlist_uri, additional_types=("track"))
+results = spotify.playlist(playlist_id=playlist_uri, additional_types=('track',))['tracks']
 
-print(results.keys())
-# ### Replace this with the user's uri i think
-# playlist_uri = 'get this shit from them'
-# ########
+sections = []
+for idx, item in enumerate(results['items']):
+    track = item['track']
+    seggs = spotify.audio_analysis(track['uri'])['sections']
+    sections.append((seggs[0], seggs[-1]))
 
-# ##### Getting the damn songs and info
-# songs = spotify.playlist_tracks(playlist_id = playlist_uri, limit=200)
 
-# songSections = []
-# for song in songs:
-#     first = spotify.audio_analysis(track_id=song[id])['sections'][0]
-#     last = spotify.audio_analysis(track_id=song[id])['sections'][-1]
-#     songSections.append((first, last))
+
 
 
 
