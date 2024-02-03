@@ -22,12 +22,23 @@ class Todo(db.Model):
 
 def index():
     if request.method == 'POST':
-        print(request.form)
-        task_content = request.form['url']
+        # print(request.form)
+        # task_content = request.form['url']
 
-        new_task = Todo(content=task_content)
-        songs = call(task_content)
-        return songs
+        # new_task = Todo(content=task_content)
+        # songs = call(task_content)
+        # return songs
+
+        link = request.form['url']
+        songs = call(link)
+        size = []
+        # for song in songs:
+        #     new_song = Todo(content=song)
+        #     db.session.add(new_song)
+        #     db.session.commit()
+        # song_list = Todo.query.order_by(Todo.date_created).all()
+        return render_template('index.html', songs=songs)
+
         #try:
          #   db.session.add(new_task)
           #  db.session.commit()

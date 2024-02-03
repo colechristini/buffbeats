@@ -34,8 +34,16 @@
         </form>
     </div>
 
+    <table class="center">
+        {%for song in songs%}
+            <tr>
+                <mark><td>{{song}}</td></mark>
+            </tr>
+        {% endfor %}
+    </table>
+
     <header>   
-        <a href="#" class="logo">Buff Beats</a>
+        <a href="#" class="logo">Smoothify</a>
         <ul>
             <li><a href='#' class="active">Home</a></li>
             <!-- <li><a href='#'>About</a></li>
