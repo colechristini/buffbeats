@@ -24,7 +24,6 @@ def getUri(s):
 # Outputs: A tuple containing the list of intro segments and the list of
 # outro segments.
 def get_segments(segments, intro_length, outro_length):
-    print('test')
     intro_segments = []
     outro_segments = []
     accumulated_time_intro = 0
@@ -63,7 +62,7 @@ def printPlaylist(finalOrder, results):
     for idx, _ in enumerate(results['items']):
         track = results['items'][finalOrder[idx]]['track']
         print(idx, track['artists'][0]['name'], " – ", track['name'])
-        songsInOrder.append((idx, track['artists'][0]['name'], " – ", track['name']))
+        songsInOrder.append(''.join((idx, track['artists'][0]['name'], " – ", track['name'])))
     return songsInOrder
 
 

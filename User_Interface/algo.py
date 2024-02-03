@@ -32,9 +32,9 @@ def dynamic_time_warping(a_1, a_2, d, weight = None, window = None):
             r = (max(1, i - window), min(len(a_2), i + window))
             for j in range(r[0], r[1]):
                 dtw[i,j] = 0
-        
+        #print(dtw)
         for i in range(1, len(a_1) + 1):
-            r = (max(1, i - window), min(len(a_2), i + window))
+            r = (max(1, i - window), min(len(a_2) + 1, i + window + 1))
             for j in range(r[0], r[1]):
                 cost = d(a_1[i - 1], a_2[j - 1])
                 # Apply weight function to cost if provided, inspired by
@@ -43,6 +43,7 @@ def dynamic_time_warping(a_1, a_2, d, weight = None, window = None):
                 dtw[i, j] = cost + min(dtw[i - 1,  j],
                                     dtw [i, j - 1],
                                     dtw[i - 1, j - 1])
+            #print(dtw)
     else:
         for i in range(1, len(a_1) + 1):
             for j in range(1, len(a_2) + 1):
@@ -85,7 +86,8 @@ def song_dist(s1, s2):
     weights = np.array([0.6, 0.7, 1, 0.8])
     # Convert similarity to distance.
     sec_dist = 1 - cos_sim(outro_features, intro_features, weights)
-    seg_dist = dynamic_time_warping(out_segs, int_segs, segment_distance, weight=exp_decay)
+    seg_dist = dynamic_time_warping(out_segs, int_segs, segment_distance,
+                                    weight=exp_decay, window=4)
     return 0.6 * sec_dist + seg_dist
 
 # Generate pairwise (non-symmetric) distance matrix for a playlist
