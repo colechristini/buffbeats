@@ -62,7 +62,7 @@ def printPlaylist(finalOrder, results):
     for idx, _ in enumerate(results['items']):
         track = results['items'][finalOrder[idx]]['track']
         print(idx, track['artists'][0]['name'], " – ", track['name'])
-        songsInOrder.append((idx, track['artists'][0]['name'], " – ", track['name']))
+        songsInOrder.append(''.join((idx, track['artists'][0]['name'], " – ", track['name'])))
     return songsInOrder
 
 
