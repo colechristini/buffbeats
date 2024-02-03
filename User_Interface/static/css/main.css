@@ -41,6 +41,45 @@ form
     min-height: 5em;
     top: 50%;
     position: absolute;
+
+    transform: translate(0, -50%);
+    color: #fff;
+}
+
+.link_box input {
+    width: 50%;
+    height: 25px;
+    background: transparent;
+    border: none;
+    outline: none;
+    /* background: rgba(255, 255, 255, 0.4); */
+    border-bottom: 4px solid rgba(255, 255, 255, 1);
+    justify-content: center;
+    align-items: center;
+    /* border-radius: 40px; */
+}
+
+.generate_button input {
+    transform: translate(0, 20%);
+    background: rgba(180, 180, 255, 0.8);
+    border-radius: 999px;
+    box-shadow: #5E5DF0 0 10px 20px -10px;
+    box-sizing: border-box;
+    color: #FFFFFF;
+    cursor: pointer;
+    font-family: Inter,Helvetica,"Apple Color Emoji","Segoe UI Emoji",NotoColorEmoji,"Noto Color Emoji","Segoe UI Symbol","Android Emoji",EmojiSymbols,-apple-system,system-ui,"Segoe UI",Roboto,"Helvetica Neue","Noto Sans",sans-serif;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 24px;
+    opacity: 1;
+    outline: 0 solid transparent;
+    padding: 8px 18px;
+    user-select: none;
+    -webkit-user-select: none;
+    touch-action: manipulation;
+    width: 50%;
+    word-break: break-word;
+    border: 0;
 }
 
 header ul
