@@ -1,7 +1,13 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
+import yaml
 
 
+with open('keys.yml', 'r') as file:
+    keys = yaml.safe_load(file)
+
+client_id = keys["SPOTIFY_CLIENT_ID"]  
+client_secret = keys["SPOTIFY_CLIENT_ID"]
 
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='_',
                                                                               client_secret='_'))
