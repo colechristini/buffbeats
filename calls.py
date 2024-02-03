@@ -2,7 +2,6 @@ import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 import yaml
 
-lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'
 
 with open('keys.yml', 'r') as file:
     keys = yaml.safe_load(file)
@@ -10,26 +9,30 @@ with open('keys.yml', 'r') as file:
 client_id = keys["SPOTIFY_CLIENT_ID"]  
 client_secret = keys["SPOTIFY_CLIENT_ID"]
 
-spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='02fb254044ab46459048afd12ccb39ec',
-                                                                              client_secret='ba0d5a9e1b2a42c294c404520abe0e00'))
-results = spotify.artist_top_tracks(lz_uri)
+spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='_',
+                                                                              client_secret='_'))
 
-print(results)
-# ### Replace this with the user's uri i think
-# playlist_uri = 'get this shit from them'
-# ########
+def getUri(s):
+    return spotify.playlist(playlist_id=s, additional_types=('track',))['tracks']
 
-# ##### Getting the damn songs and info
-# songs = spotify.playlist_tracks(playlist_id = playlist_uri, limit=200)
+results = getUri('https://open.spotify.com/playlist/2kTwuQqA8VlSFXVKwHB3sf?si=179e53d5ffc94b31')
 
-# songSections = []
-# for song in songs:
-#     first = spotify.audio_analysis(track_id=song[id])['sections'][0]
-#     last = spotify.audio_analysis(track_id=song[id])['sections'][-1]
-#     songSections.append((first, last))
+sections = []
+
+for idx, item in enumerate(results['items']):
+    track = item['track']
+    seggs = spotify.audio_analysis(track['uri'])['sections']
+    sections.append((seggs[0], seggs[-1]))
 
 
 
+
+
+
+def printPlaylist(finalOrder):
+    for idx, _ in enumerate(results['items']):
+        track = results['items'][finalOrder[idx]]['track']
+        print(idx, track['artists'][0]['name'], " – ", track['name'])
 
 
 
