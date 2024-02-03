@@ -1,10 +1,12 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-#from calls import call
+from calls import call
+from werkzeug.middleware.profiler import ProfilerMiddleware
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
+app.wsgi_app = ProfilerMiddleware(app.wsgi_app,restrictions=('algo.py',))
 db = SQLAlchemy(app)
 
 class Todo(db.Model):
@@ -21,9 +23,11 @@ class Todo(db.Model):
 def index():
     if request.method == 'POST':
         print(request.form)
-        task_content = request.form['link']
+        task_content = request.form['url']
+
         new_task = Todo(content=task_content)
-        #songs = call(task_content)
+        songs = call(task_content)
+        return songs
         #try:
          #   db.session.add(new_task)
           #  db.session.commit()
