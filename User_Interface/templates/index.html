@@ -36,14 +36,24 @@
         </form>
     </div>
 
+    <table class="center">
+        {%for song in songs%}
+            <tr>
+                <mark><td>{{song}}</td></mark>
+            </tr>
+        {% endfor %}
+    </table>
+
     <header>   
-        <a href="#" class="logo">Buff Beats</a>
-        <ul>
-            <li><a href='#' class="active">Home</a></li>
-            <!-- <li><a href='#'>About</a></li>
-            <li><a href='#'>Work</a></li>
-            <li><a href='#'>Contact</a></li> -->
-        </ul>
+        <a href="#" class="logo">Smoothify</a>
+        <div class="home_button">
+            <ul>
+                <li><a href='#' class="active">Home</a></li>
+                <!-- <li><a href='#'>About</a></li>
+                <li><a href='#'>Work</a></li>
+                <li><a href='#'>Contact</a></li> -->
+            </ul>
+        </div>
     </header>
 
     <style>	
