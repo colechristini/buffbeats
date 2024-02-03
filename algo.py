@@ -1,8 +1,13 @@
 import numpy as np
 
+# Exponential decay for comparing lists of notes
 def exp_decay (i, j):
     t = i + j
     return np.exp(-t/10)
+
+# Compute the weighted cosine similarity between two arrays of floats
+def weighted_cos_sim(a, b, weights):
+    return np.dot(weights * a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 # For Misho - takes in list of segments and returns tuple of segments
 # corresponding to intro and outro sections
@@ -11,18 +16,23 @@ def get_segments(segments, intro_length, outro_length):
     outro_segments = []
     accumulated_time_intro = 0
     intro_index = 0
+    # Get segments corresponding to intro
     while accumulated_time_intro < intro_length:
         accumulated_time_intro += segments[intro_index]['duration']
         intro_segments.append(segments[intro_index])
         intro_index += 1
     accumulated_time_outro = 0
     outro_index = len(segments) - 1
+    # Get segments corresponding to outro
     while accumulated_time_outro < outro_length:
         accucumulated_time_outro += segments[outro_index]['duration']
         outro_segments.append(segments[outro_index])
         outro_index -= 1
     return (intro_segments,outro_segments)
 
+# Use dynamic time warping to find the distance between two 
+# different sized lists/time series, using a supplied distance 
+# function and an optional weight function
 def dynamic_time_warping(a_1, a_2, d, w = None):
     dtw = np.full((len(a_1) + 1, len(a_2) + 1), np.inf)
     dtw[0, 0] = 0
@@ -35,6 +45,7 @@ def dynamic_time_warping(a_1, a_2, d, w = None):
                                    dtw[i - 1, j - 1])
     return dtw[-1, -1]
     
+# Calculate distance between two supplied segments
 def segment_distance(s1, s2):
     s1_loudness_vec = [s1['loudness_start'], s1['loudness_max'],
                        s1['loudness_max_time'], s1['loudness_end']]
@@ -47,9 +58,7 @@ def segment_distance(s1, s2):
     timbre_dist = dynamic_time_warping(s1['timbre'], s2['timbre'], dist)
     return 0.6 * loudness_dist + pitch_dist + 0.5 * timbre_dist
 
-def weighted_cos_sim(a, b, weights):
-    return np.dot(weights * a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
-
+# Calculate distance between two songs
 def song_dist(s1, s2):
     out_sec = s1[2]
     out_segs = s1[3]
@@ -65,7 +74,8 @@ def song_dist(s1, s2):
     seg_dist = dynamic_time_warping(out_segs, int_segs, segment_distance, exp_decay)
     return 0.6 * sec_dist + seg_dist
 
-
+# Generate pairwise (non-symmetric) distance matrix for a playlist
+# of songs
 def make_matrix(songs):
     dists = np.zeros((len(songs), len(songs)))
     for i in range(len(songs)):
@@ -76,20 +86,31 @@ def make_matrix(songs):
                 dists[i,j] = song_dist(songs[i], songs[j])
     return dists
 
+# Greedily solve aTSP to find a solution approximately minimizing
+# transition distances
 def greedy(dists, start):
     out = [start]
+    dist_out = []
     current = start
     length = len(dists)
     while len (out) < length:
         nextElem = np.argmin(dists[current])
+        dist_out.append(dists[current, nextElem])
         dists[:, current] = np.inf
         out.append(nextElem)
         current = nextElem
-    return out
+    return (out, sum(dist_out))
 
-def processPlaylist(songs):
+# Process a playlist by repeatedly solving using greedy heuristic
+# and then selecting the ordering that minimizes the sum of 
+# transition distances between consecutive songs
+def processPlaylist(songs, iterations):
     dists = make_matrix(songs)
-    return greedy(dists, 0)
+    outputs = []
+    for _ in range(iterations):
+        start = np.random.randint(0, len(songs))
+        outputs.append(greedy(dists, start))
+    return outputs[np.argmin(np.array(outputs)[:, 1])][0]
 
     
 
