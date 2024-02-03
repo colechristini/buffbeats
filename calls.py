@@ -29,6 +29,11 @@ def printPlaylist(finalOrder):
         print(idx, track['artists'][0]['name'], " – ", track['name'])
 
 
+def makePlaylist(finalOrder, user):
+    woohoo = spotify.user_playlist_create(user=user, public=True, collaborative=False, description='')
+    for idx, _ in enumerate(results['items']):
+        track = results['items'][finalOrder[idx]]['track']
+        spotify.user_playlist_add_tracks(user=user, playlist_id=woohoo, position=idx, tracks=[track])
 
 # ###Making the playlist
 # #let's assume we have the finished songs - put it in the following array
