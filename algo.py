@@ -14,31 +14,6 @@ def exp_decay (i, j):
 def weighted_cos_sim(a, b, weights):
     return np.dot(weights * a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
-# For Misho - takes in list of segments and returns tuple of segments
-# corresponding to intro and outro sections
-# Inputs: The list of segments for the song, the length of the intro section,
-# and the length of the outro section.
-# Outputs: A tuple containing the list of intro segments and the list of
-# outro segments.
-def get_segments(segments, intro_length, outro_length):
-    intro_segments = []
-    outro_segments = []
-    accumulated_time_intro = 0
-    intro_index = 0
-    # Get segments corresponding to intro
-    while accumulated_time_intro < intro_length:
-        accumulated_time_intro += segments[intro_index]['duration']
-        intro_segments.append(segments[intro_index])
-        intro_index += 1
-    accumulated_time_outro = 0
-    outro_index = len(segments) - 1
-    # Get segments corresponding to outro
-    while accumulated_time_outro < outro_length:
-        accucumulated_time_outro += segments[outro_index]['duration']
-        outro_segments.append(segments[outro_index])
-        outro_index -= 1
-    return (intro_segments,outro_segments)
-
 # Use dynamic time warping to find the distance between two 
 # different sized lists/time series.
 # Inputs: Two arrays, a distance function that computes the distance
