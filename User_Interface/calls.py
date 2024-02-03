@@ -58,9 +58,12 @@ def getSongs(uris):
 
 
 def printPlaylist(finalOrder, results):
+    songsInOrder = []
     for idx, _ in enumerate(results['items']):
         track = results['items'][finalOrder[idx]]['track']
         print(idx, track['artists'][0]['name'], " – ", track['name'])
+        songsInOrder.append((idx, track['artists'][0]['name'], " – ", track['name']))
+    return songsInOrder
 
 
 def makePlaylist(finalOrder, user, results):
@@ -77,7 +80,7 @@ def call(url):
     results = getUri(url)
     songs = getSongs(results)
     finalOrder = processPlaylist(songs, 10)
-    printPlaylist(finalOrder, results)
+    return printPlaylist(finalOrder, results)
 
     
 # ###Making the playlist

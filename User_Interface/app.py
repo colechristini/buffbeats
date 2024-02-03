@@ -23,7 +23,7 @@ def index():
         print(request.form)
         task_content = request.form['link']
         new_task = Todo(content=task_content)
-        call(task_content)
+        songs = call(task_content)
         #try:
          #   db.session.add(new_task)
           #  db.session.commit()
