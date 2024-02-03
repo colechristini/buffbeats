@@ -52,8 +52,8 @@ def dynamic_time_warping(a_1, a_2, d, w = None):
     for i in range(1, len(a_1) + 1):
         for j in range(1, len(a_2) + 1):
             cost = d(a_1[i - 1], a_2[j - 1])
-            # Apply weight function to cost if provided
-            # TODO: consider if there's a better way to apply this
+            # Apply weight function to cost if provided, inspired by
+            # https://www.sciencedirect.com/science/article/pii/S0020025520308501
             if w is not None: cost *= w(i - 1, j - 1 )
             dtw[i, j] = cost + min(dtw[i - 1,  j],
                                    dtw [i, j - 1],
@@ -142,6 +142,3 @@ def processPlaylist(songs, iterations : int):
         start = np.random.randint(0, len(songs))
         outputs.append(greedy(dists, start))
     return outputs[np.argmin(np.array(outputs)[:, 1])][0]
-
-    
-
