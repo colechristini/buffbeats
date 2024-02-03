@@ -1,14 +1,18 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-playlist_uri = 'spotify:playlist:2kTwuQqA8VlSFXVKwHB3sf'
 
 
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='02fb254044ab46459048afd12ccb39ec',
                                                                               client_secret='ba0d5a9e1b2a42c294c404520abe0e00'))
-results = spotify.playlist(playlist_id=playlist_uri, additional_types=('track',))['tracks']
+
+def getUri(s):
+    return spotify.playlist(playlist_id=s, additional_types=('track',))['tracks']
+
+results = getUri('https://open.spotify.com/playlist/2kTwuQqA8VlSFXVKwHB3sf?si=179e53d5ffc94b31')
 
 sections = []
+
 for idx, item in enumerate(results['items']):
     track = item['track']
     seggs = spotify.audio_analysis(track['uri'])['sections']
@@ -19,6 +23,10 @@ for idx, item in enumerate(results['items']):
 
 
 
+def printPlaylist(finalOrder):
+    for idx, item in enumerate(results['items']):
+        track = results['items'][finalOrder[idx]]['track']
+        print(idx, track['artists'][0]['name'], " – ", track['name'])
 
 
 
