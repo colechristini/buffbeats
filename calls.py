@@ -1,14 +1,14 @@
 import spotipy
 from spotipy.oauth2 import SpotifyClientCredentials
 
-lz_uri = 'spotify:artist:36QJpDe2go2KgaRleHCDTp'
+playlist_uri = 'spotify:playlist:2kTwuQqA8VlSFXVKwHB3sf'
 
 
 spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='02fb254044ab46459048afd12ccb39ec',
                                                                               client_secret='ba0d5a9e1b2a42c294c404520abe0e00'))
-results = spotify.artist_top_tracks(lz_uri)
+results = spotify.playlist(playlist_id=playlist_uri, additional_types=("track"))
 
-print(results)
+print(results.keys())
 # ### Replace this with the user's uri i think
 # playlist_uri = 'get this shit from them'
 # ########
