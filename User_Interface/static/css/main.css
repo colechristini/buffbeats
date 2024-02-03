@@ -61,12 +61,12 @@ header ul li a
     color: #fff;
     border-radius: 20px;
 }
-header ul li a:hover,
-header ul li a.active
+/* header ul li a:hover, */
+/* header ul li a.active
 {
     background: #fff;
     color: #2b1055
-}
+} */
 
 mark { 
     background-color: rgba(255, 255, 0, 0.659);
@@ -80,7 +80,7 @@ mark {
     text-align: center;
     min-height: 5em;
     position: absolute;
-    bottom: 0;
+    bottom: 10%;
     /* top: 80%;
     transform: translate(0, -80%); */
     font-family: "Crimson Pro", serif;
