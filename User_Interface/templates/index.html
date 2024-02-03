@@ -9,13 +9,61 @@
 
 
 {% block body %}
-<div class = "content">
-    <h1>Home</h1>
-    <p>Welcome to the home page</p>
+    <div class = "content">
+        <form action="/" method="POST">
+            <!-- <input type="text" name="link" placeholder="playlist link"> -->
+            <!-- <input id="link" type="Generate"> -->
+            <input type="url"
+                name="url"
+                id="url"
+                placeholder="https://example.com"
+                pattern="http://www\.open\.spotify\.com\/(.+)|https://www\.open\.spotify\.com\/(.+)|https://open\.spotify\.com\/(.+)">
+                <!-- https://open.spotify.com/playlist -->
+            
+            <input type="submit" value ="Generate">
 
-    <form action="/" method="POST">
-        <input type="text" name="link" placeholder="playlist link">
-        <input type="submit" value="Generate">
-    </form>
-</div>
+            <!-- <button type="button" onClick="GeneratePlaylist()" >Generate</button>
+            <p id="generated"></p>
+            <script>
+                function GeneratePlaylist() {
+                    let link = document.getElementById("url").value;
+                    document.getElementbyId("generated").innerHTML = link;
+                }
+            </script> -->
+
+        </form>
+    </div>
+
+    <header>   
+        <a href="#" class="logo">Buff Beats</a>
+        <ul>
+            <li><a href='#' class="active">Home</a></li>
+            <!-- <li><a href='#'>About</a></li>
+            <li><a href='#'>Work</a></li>
+            <li><a href='#'>Contact</a></li> -->
+        </ul>
+    </header>
+
+    <style>	
+        .column {
+          float: left;
+          width: 50%;
+          padding: 0px;
+        }
+        img {
+          width: 100%;
+        }	
+    </style>
+
+    <!-- <div class="container">
+        <div class="column">
+          <img src="https://img.freepik.com/free-vector/gradient-pastel-sky-background_23-2148923837.jpg?w=2000&t=st=1706948671~exp=1706949271~hmac=b1f82a20cd397c7ba2fb630a3402972851138d47808db3ff036ed29435455391">
+        </div>
+        <div class="column">
+          <img src="https://img.freepik.com/free-vector/hand-drawn-clouds-collection_23-2149017319.jpg?w=1480&t=st=1706945483~exp=1706946083~hmac=36c935fae4aed697dbdf15256ff942e61903feeec3cf2dbade8abf130da983bc">
+        </div>
+    </div> -->
+    <div class="img">
+        <img src="https://img.freepik.com/free-vector/gradient-pastel-sky-background_23-2148923837.jpg?w=2000&t=st=1706948671~exp=1706949271~hmac=b1f82a20cd397c7ba2fb630a3402972851138d47808db3ff036ed29435455391">
+    </div>
 {% endblock %}

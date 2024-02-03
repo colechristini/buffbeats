@@ -1,7 +1,7 @@
 from flask import Flask, render_template, url_for, request, redirect
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
-from calls import call
+#from calls import call
 
 app = Flask(__name__)
 app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///site.db'
@@ -23,7 +23,7 @@ def index():
         print(request.form)
         task_content = request.form['link']
         new_task = Todo(content=task_content)
-        songs = call(task_content)
+        #songs = call(task_content)
         #try:
          #   db.session.add(new_task)
           #  db.session.commit()

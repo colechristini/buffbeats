@@ -1,4 +1,74 @@
+@import url('https://fonts.googleapis.com/css2?family=Nabla&display=swap');
+
 body {
     margin: 0;
-    font-family: sans-serif;
+    padding: 0;
+    box-sizing: border-box;
+    font-family:"Nabla", system-ui;
+}
+body
+{
+    min-height: 100vh;
+    background: linear-gradient(#2b1055,#7597de);
+}
+header
+{
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 80%;
+    padding: 10px 30px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+header .logo
+{
+    color: #fff;
+    font-weight: 700;
+    text-decoration: none;
+    font-size: 2em;
+    text-transform: uppercase;
+    letter-spacing: 2px;
+}
+
+form
+{
+    width: 100%;
+    text-align: center;
+    min-height: 5em;
+    top: 50%;
+    position: absolute;
+    transform: translate(0, -50%);
+}
+
+header ul
+{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+}
+header ul li
+{
+    list-style: none;
+    margin-left: 20px;
+}
+header ul li a
+{
+    text-decoration: none;
+    padding: 6px 15px;
+    color: #fff;
+    border-radius: 20px;
+}
+header ul li a:hover,
+header ul li a.active
+{
+    background: #fff;
+    color: #2b1055
+}
+
+img
+{
+    width: 100%;
+    z-index: 0;
 }
