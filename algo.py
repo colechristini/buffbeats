@@ -89,11 +89,12 @@ def make_matrix(songs):
 # Inputs: A distance matrix representing the transition distance
 # between songs.
 # Outputs: A list of indices corresponding to the greedy order.
-def greedy(dists : npt.ndarray[np.float_], start : int):
+def greedy(dists : npt.NDArray[np.float_], start : int):
     out = [start]
     dist_out = []
     current = start
     length = len(dists)
+    dists = np.copy(dists)
     while len (out) < length:
         nextElem = np.argmin(dists[current])
         dist_out.append(dists[current, nextElem])
@@ -113,7 +114,11 @@ def greedy(dists : npt.ndarray[np.float_], start : int):
 def processPlaylist(songs, iterations : int):
     dists = make_matrix(songs)
     outputs = []
+    max_dists = []
     for _ in range(iterations):
         start = np.random.randint(0, len(songs))
-        outputs.append(greedy(dists, start))
-    return outputs[np.argmin(np.array(outputs)[:, 1])][0]
+        order, maxDist = greedy(dists, start)
+        outputs.append(order)
+        max_dists.append(maxDist)
+    print(outputs)
+    return outputs[np.argmin(np.array(max_dists))]

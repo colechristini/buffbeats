@@ -8,10 +8,10 @@ with open('keys.yml', 'r') as file:
     keys = yaml.safe_load(file)
 
 client_id = keys["SPOTIFY_CLIENT_ID"]  
-client_secret = keys["SPOTIFY_CLIENT_ID"]
+client_secret = keys["SPOTIFY_CLIENT_SECRET"]
 
-spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id='_',
-                                                                              client_secret='_'))
+spotify = spotipy.Spotify(client_credentials_manager=SpotifyClientCredentials(client_id=client_id,
+                                                                              client_secret=client_secret))
 
 def getUri(s):
     return spotify.playlist(playlist_id=s, additional_types=('track',))['tracks']
@@ -37,15 +37,16 @@ def get_segments(segments, intro_length, outro_length):
     outro_index = len(segments) - 1
     # Get segments corresponding to outro
     while accumulated_time_outro < outro_length:
-        accucumulated_time_outro += segments[outro_index]['duration']
+        accumulated_time_outro += segments[outro_index]['duration']
         outro_segments.append(segments[outro_index])
         outro_index -= 1
     return (intro_segments,outro_segments)
 
 def getSongs(uris):
     songs = []
-    for _, item in enumerate(uris['items']):
+    for idx, item in enumerate(uris['items']):
         track = item['track']
+        print(idx, f'{track["artists"][0]} - {track["name"]}')
         aa = spotify.audio_analysis(track['uri'])
         secs = aa['sections']
         segs = aa['segments']
@@ -71,7 +72,7 @@ def makePlaylist(finalOrder, user, results):
 
 
 def main():
-    results = getUri('https://open.spotify.com/playlist/2kTwuQqA8VlSFXVKwHB3sf?si=179e53d5ffc94b31')
+    results = getUri('https://open.spotify.com/playlist/6Z4lbojOv2wi0C1fWGnxvj?si=cfc7447dee72419d')
     songs = getSongs(results)
     finalOrder = processPlaylist(songs, 10)
     printPlaylist(finalOrder, results)
