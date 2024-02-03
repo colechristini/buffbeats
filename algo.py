@@ -12,13 +12,13 @@ def get_segments(segments, intro_length, outro_length):
     accumulated_time_intro = 0
     intro_index = 0
     while accumulated_time_intro < intro_length:
-        accumulated_time_intro += segments[intro_index].duration
+        accumulated_time_intro += segments[intro_index]['duration']
         intro_segments.append(segments[intro_index])
         intro_index += 1
     accumulated_time_outro = 0
     outro_index = len(segments) - 1
     while accumulated_time_outro < outro_length:
-        accucumulated_time_outro += segments[outro_index].duration
+        accucumulated_time_outro += segments[outro_index]['duration']
         outro_segments.append(segments[outro_index])
         outro_index -= 1
     return (intro_segments,outro_segments)
@@ -36,15 +36,15 @@ def dynamic_time_warping(a_1, a_2, d, w = None):
     return dtw[-1, -1]
     
 def segment_distance(s1, s2):
-    s1_loudness_vec = [s1.loudness_start, s1.loudness_max,
-                       s1.loudness_max_time, s1.loudness_end]
-    s2_loudness_vec = [s2.loudness_start, s2.loudness_max,
-                       s2.loudness_max_time, s2.loudness_end]
+    s1_loudness_vec = [s1['loudness_start'], s1['loudness_max'],
+                       s1['loudness_max_time'], s1['loudness_end']]
+    s2_loudness_vec = [s2['loudness_start'], s2['loudness_max'],
+                       s2['loudness_max_time'], s2['loudness_end']]
     weights = np.array([0.75, 1, 0.9, 0.6])
     loudness_dist = 1 - weighted_cos_sim(s1_loudness_vec, s2_loudness_vec, weights)
     dist = lambda a, b: abs(a - b)
-    pitch_dist = dynamic_time_warping(s1.pitches, s2.pitches, dist)
-    timbre_dist = dynamic_time_warping(s1.timbre, s2.timbre, dist)
+    pitch_dist = dynamic_time_warping(s1['pitches'], s2['pitches'], dist)
+    timbre_dist = dynamic_time_warping(s1['timbre'], s2['timbre'], dist)
     return 0.6 * loudness_dist + pitch_dist + 0.5 * timbre_dist
 
 def weighted_cos_sim(a, b, weights):
@@ -76,8 +76,6 @@ def make_matrix(songs):
                 dists[i,j] = song_dist(songs[i], songs[j])
     return dists
 
-
-
 def greedy(dists, start):
     out = [start]
     current = start
@@ -89,11 +87,9 @@ def greedy(dists, start):
         current = nextElem
     return out
 
-def generateRandomMatrix(x):
-    out = np.random.rand(x, x)
-    for i in range(len(out)):
-        out[i,i] = np.inf
-    return out
+def processPlaylist(songs):
+    dists = make_matrix(songs)
+    return greedy(dists, 0)
 
     
 
