@@ -1,16 +1,25 @@
 import numpy as np
+import numpy.typing as npt
 
-# Exponential decay for comparing lists of notes
+# Exponential decay for comparing lists of notes.
+# Inputs: The two indices
+# Outputs: The exponential decay of the two indices.
 def exp_decay (i, j):
     t = i + j
     return np.exp(-t/10)
 
-# Compute the weighted cosine similarity between two arrays of floats
+# Compute the weighted cosine similarity between two arrays of floats.
+# Inputs: Two arrays of floats, a weight array.
+# Outputs: The weighted cosine similarity between the two arrays.
 def weighted_cos_sim(a, b, weights):
     return np.dot(weights * a, b) / (np.linalg.norm(a) * np.linalg.norm(b))
 
 # For Misho - takes in list of segments and returns tuple of segments
 # corresponding to intro and outro sections
+# Inputs: The list of segments for the song, the length of the intro section,
+# and the length of the outro section.
+# Outputs: A tuple containing the list of intro segments and the list of
+# outro segments.
 def get_segments(segments, intro_length, outro_length):
     intro_segments = []
     outro_segments = []
@@ -31,21 +40,29 @@ def get_segments(segments, intro_length, outro_length):
     return (intro_segments,outro_segments)
 
 # Use dynamic time warping to find the distance between two 
-# different sized lists/time series, using a supplied distance 
-# function and an optional weight function
+# different sized lists/time series.
+# Inputs: Two arrays, a distance function that computes the distance
+# between an element of the first and an element of the second, and
+# an optional weight function.
+# Outputs: the DTW distance between the two lists.
+# https://en.wikipedia.org/wiki/Dynamic_time_warping
 def dynamic_time_warping(a_1, a_2, d, w = None):
     dtw = np.full((len(a_1) + 1, len(a_2) + 1), np.inf)
     dtw[0, 0] = 0
     for i in range(1, len(a_1) + 1):
         for j in range(1, len(a_2) + 1):
             cost = d(a_1[i - 1], a_2[j - 1])
+            # Apply weight function to cost if provided
+            # TODO: consider if there's a better way to apply this
             if w is not None: cost *= w(i - 1, j - 1 )
             dtw[i, j] = cost + min(dtw[i - 1,  j],
                                    dtw [i, j - 1],
                                    dtw[i - 1, j - 1])
     return dtw[-1, -1]
     
-# Calculate distance between two supplied segments
+# Calculate distance between two supplied segments.
+# Inputs: A pair of segments (sounds in the song).
+# Outputs: A float representing the distance between the two segments.
 def segment_distance(s1, s2):
     s1_loudness_vec = [s1['loudness_start'], s1['loudness_max'],
                        s1['loudness_max_time'], s1['loudness_end']]
@@ -58,7 +75,10 @@ def segment_distance(s1, s2):
     timbre_dist = dynamic_time_warping(s1['timbre'], s2['timbre'], dist)
     return 0.6 * loudness_dist + pitch_dist + 0.5 * timbre_dist
 
-# Calculate distance between two songs
+# Calculate distance between two songs. 
+# Inputs: A pair of songs.
+# Outputs the distance between the end of the first song ad the start
+# of the second.
 def song_dist(s1, s2):
     out_sec = s1[2]
     out_segs = s1[3]
@@ -69,13 +89,16 @@ def song_dist(s1, s2):
     intro_features = [int_sec['loudness'], int_sec['tempo'],
                       int_sec['key'], int_sec['mode']]
     weights = np.array([0.6, 0.7, 1, 0.8])
+    # Convert similarity to distance.
     sec_dist = 1 - weighted_cos_sim(outro_features, intro_features, weights)
-    # Figure out how to 
     seg_dist = dynamic_time_warping(out_segs, int_segs, segment_distance, exp_decay)
     return 0.6 * sec_dist + seg_dist
 
 # Generate pairwise (non-symmetric) distance matrix for a playlist
-# of songs
+# of songs.
+# Inputs: A list of songs, with type described below
+# Outputs: The transition distance matrix, where dists[i,j] is the 'distance'
+# between the end of song i and the start of song j, and a starting index.
 def make_matrix(songs):
     dists = np.zeros((len(songs), len(songs)))
     for i in range(len(songs)):
@@ -87,8 +110,11 @@ def make_matrix(songs):
     return dists
 
 # Greedily solve aTSP to find a solution approximately minimizing
-# transition distances
-def greedy(dists, start):
+# transition distances. 
+# Inputs: A distance matrix representing the transition distance
+# between songs.
+# Outputs: A list of indices corresponding to the greedy order.
+def greedy(dists : npt.ndarray[np.float_], start : int):
     out = [start]
     dist_out = []
     current = start
@@ -101,10 +127,15 @@ def greedy(dists, start):
         current = nextElem
     return (out, sum(dist_out))
 
-# Process a playlist by repeatedly solving using greedy heuristic
-# and then selecting the ordering that minimizes the sum of 
-# transition distances between consecutive songs
-def processPlaylist(songs, iterations):
+# Process a playlist by repeatedly solving using greedy heuristic and then
+# selecting the ordering that minimizes the sum of transition distances between
+# consecutive songs.
+# Inputs: a list of songs, where a song is a tuple of type
+# (intro_section : dict, intro segs : dict list,
+#  outro_section : dict, outro segs : dict list)
+# and an iteration count
+# Outputs: A list of indices corresponding to the optimal order
+def processPlaylist(songs, iterations : int):
     dists = make_matrix(songs)
     outputs = []
     for _ in range(iterations):
