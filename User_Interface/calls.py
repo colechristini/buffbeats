@@ -71,15 +71,12 @@ def makePlaylist(finalOrder, user, results):
     spotify.user_playlist_add_tracks(user=user, playlist_id=woohoo, position=0, tracks=tracks)
 
 
-def main():
-    results = getUri('https://open.spotify.com/playlist/6Z4lbojOv2wi0C1fWGnxvj?si=cfc7447dee72419d')
+def call(url):
+    results = getUri(url)
     songs = getSongs(results)
     finalOrder = processPlaylist(songs, 10)
     printPlaylist(finalOrder, results)
 
-
-    
-main()
     
 # ###Making the playlist
 # #let's assume we have the finished songs - put it in the following array
